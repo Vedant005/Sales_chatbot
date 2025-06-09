@@ -336,7 +336,7 @@ def converse():
         if products_found:
             response_message = "Here are some products I found:\n"
             for i, product in enumerate(products_found):
-                response_message += f"{i+1}. {product.name} (₹{product.discounted_price})\n"
+                response_message += f"{i+1}. {product.name} (₹{product.price})\n"
             products_to_send = [p.to_dict() for p in products_found]
             session_data["last_products_shown"] = products_found
             session_data["last_intent"] = "search"
