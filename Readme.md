@@ -76,56 +76,6 @@ The chatbot is designed to provide a conversational interface for various e-comm
 - **Axios:** Promise-based HTTP client for API requests
 - **React Router DOM:** For client-side routing
 
-## Project Structure
-
-.
-├── backend/
-│ ├── app/
-│ │ ├── init.py # Flask app creation, DB/JWT/CORS initialization, blueprint registration
-│ │ ├── config.py # Configuration settings (DB URI, JWT Secret, etc.)
-│ │ ├── models/
-│ │ │ ├── init.py # Makes 'models' a Python package
-│ │ │ ├── user.py # User model (ORM definition)
-│ │ │ ├── product.py # Product model (ORM definition)
-│ │ │ └── cart.py # Cart and CartItem models (ORM definition)
-│ │ └── routes/
-│ │ ├── init.py # Makes 'routes' a Python package
-│ │ ├── auth.py # Authentication routes (register, login, refresh, logout)
-│ │ ├── product.py # Product listing and detail routes
-│ │ ├── cart.py # Shopping cart management routes
-│ │ └── chatbot.py # Chatbot conversation logic route
-│ ├── run.py # Script to run the Flask application
-│ ├── seed_data.py # Script to initialize database tables and populate product data from CSV
-│ └── requirements.txt # Python dependencies
-├── frontend/
-│ ├── public/
-│ │ └── ... # Public assets
-│ ├── src/
-│ │ ├── App.tsx # Main React application component and routing
-│ │ ├── index.css # Tailwind CSS entry point
-│ │ ├── main.tsx # React entry point
-│ │ ├── components/
-│ │ │ ├── Header.tsx # Website header with navigation
-│ │ │ ├── Filter.tsx # Product filtering component
-│ │ │ ├── ProductCard.tsx # Displays single product information
-│ │ │ └── ChatbotSidebar.tsx# The interactive chatbot UI widget
-│ │ ├── pages/
-│ │ │ ├── HomePage.tsx # Introduction/landing page
-│ │ │ ├── LoginPage.tsx # User login page
-│ │ │ ├── SignupPage.tsx # User registration page
-│ │ │ ├── ProductsPage.tsx # Product catalog page with filters and pagination
-│ │ │ └── CartPage.tsx # Shopping cart view and management page
-│ │ └── stores/
-│ │ ├── useAuthStore.ts # Zustand store for authentication state and actions
-│ │ ├── useProductStore.ts# Zustand store for product data and actions
-│ │ ├── useCartStore.ts # Zustand store for shopping cart data and actions
-│ │ └── useChatbotStore.ts# Zustand store for chatbot conversation state and actions
-│ ├── package.json # Frontend dependencies and scripts
-│ ├── postcss.config.js
-│ ├── tailwind.config.js
-│ └── tsconfig.json
-└── README.md # This file
-
 ## Setup and Installation
 
 Follow these steps to set up and run the project locally.
@@ -140,7 +90,7 @@ Follow these steps to set up and run the project locally.
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository_url>
+    gh repo clone Vedant005/Sales_chatbot
     cd sales_chatbot
     ```
 2.  **Navigate to the backend directory:**
