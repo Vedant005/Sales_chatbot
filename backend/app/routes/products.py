@@ -2,57 +2,67 @@
 
 from flask import Blueprint, request, jsonify
 from app import db
-from app.models.product import Product # Assuming your Product model is in app/models/product.py
+from app.models.product import Product
 from flask_jwt_extended import jwt_required # To protect product routes if needed
 
 product_bp = Blueprint('product', __name__)
 
 @product_bp.route('/', methods=['GET'])
-# You might want to protect this route with @jwt_required() if product listing
-# is only for authenticated users, otherwise leave it open.
-# @jwt_required()
+# @jwt_required() # Uncomment if product listing should be protected
 def fetch_products():
     """
-    Fetches a list of products.
-    Supports optional search by 'name' and filtering by 'category'.
-    Example: /products?name=laptop&category=electronics
+    Fetches a list of products with optional search, filtering, and pagination.
+    Query parameters:
+    - name: search term for product name
+    - category: filter by category
+    - page: current page number (1-indexed)
+    - per_page: number of items per page
     """
     query_name = request.args.get('name')
     query_category = request.args.get('category')
-    query_limit = request.args.get('limit', type=int) # Optional limit for results
-    query_offset = request.args.get('offset', type=int) # Optional offset for pagination
 
-    products = Product.query
+    # Pagination parameters
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 12, type=int) # Default to 12 products per page
+
+    products_query = Product.query
 
     if query_name:
-        # Case-insensitive search for product name
-        products = products.filter(Product.name.ilike(f'%{query_name}%'))
+        products_query = products_query.filter(Product.name.ilike(f'%{query_name}%'))
 
     if query_category:
-        # Case-insensitive search for category
-        products = products.filter(Product.category.ilike(f'%{query_category}%'))
+        products_query = products_query.filter(Product.category.ilike(f'%{query_category}%'))
 
-    # Apply offset and limit for pagination if provided
-    if query_offset:
-        products = products.offset(query_offset)
-    if query_limit:
-        products = products.limit(query_limit)
+    # Get total count BEFORE applying pagination limits
+    total_products = products_query.count()
 
-    all_products = products.all()
+    # Apply pagination
+    # Calculate offset: (page - 1) * per_page
+    products_query = products_query.offset((page - 1) * per_page).limit(per_page)
 
-    if not all_products:
-        return jsonify({"message": "No products found matching your criteria."}), 404
+    all_products = products_query.all()
 
-    return jsonify([product.to_dict() for product in all_products]), 200
+    if not all_products and total_products == 0:
+        return jsonify({
+            "message": "No products found matching your criteria.",
+            "products": [],
+            "total_products": 0,
+            "page": page,
+            "per_page": per_page
+        }), 200 # Changed to 200 OK as it's a valid empty result
+
+    return jsonify({
+        "products": [product.to_dict() for product in all_products],
+        "total_products": total_products,
+        "page": page,
+        "per_page": per_page
+    }), 200
 
 @product_bp.route('/<int:id>', methods=['GET'])
-# You might want to protect this route with @jwt_required() if single product view
-# is only for authenticated users, otherwise leave it open.
-# @jwt_required()
+# @jwt_required() # Uncomment if single product view should be protected
 def fetch_single_product(id):
     """
     Fetches a single product by its ID.
-    Example: /products/123
     """
     product = Product.query.get(id)
 
