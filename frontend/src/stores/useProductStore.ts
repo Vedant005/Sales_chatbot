@@ -1,9 +1,5 @@
-// src/stores/useProductStore.ts
 import { create } from "zustand";
 import axios from "axios";
-
-// --- Interfaces ---
-
 interface Product {
   id: number;
   name: string;
@@ -16,15 +12,14 @@ interface Product {
   rating_count: number | null;
   image_url: string;
   product_url: string;
-  // brand?: string; // Add if your Product model has this
 }
 
 interface ProductState {
   products: Product[];
   selectedProduct: Product | null;
-  totalProducts: number; // NEW: Total count of products matching filters
-  currentPage: number; // NEW: Current page number
-  productsPerPage: number; // NEW: Number of products per page
+  totalProducts: number;
+  currentPage: number;
+  productsPerPage: number;
   isLoading: boolean;
   error: string | null;
 }
@@ -33,28 +28,26 @@ interface ProductActions {
   fetchProducts: (params?: {
     name?: string;
     category?: string;
-    page?: number; // NEW: Page number to fetch
-    per_page?: number; // NEW: Items per page
+    page?: number;
+    per_page?: number;
   }) => Promise<void>;
   fetchSingleProduct: (productId: number) => Promise<void>;
   clearSelectedProduct: () => void;
   clearError: () => void;
-  setCurrentPage: (page: number) => void; // NEW: Action to update current page
-  setProductsPerPage: (perPage: number) => void; // NEW: Action to update products per page
+  setCurrentPage: (page: number) => void;
+  setProductsPerPage: (perPage: number) => void;
 }
 
-// --- API Base URL ---
-const API_BASE_URL = "http://127.0.0.1:5000"; // Make sure this matches your Flask backend URL
+const API_BASE_URL = "http://127.0.0.1:5000";
 
-// --- Product Store ---
 export const useProductStore = create<ProductState & ProductActions>(
   (set, get) => ({
     // Initial State
     products: [],
     selectedProduct: null,
-    totalProducts: 0, // Initialize
-    currentPage: 1, // Start on page 1
-    productsPerPage: 12, // Default products per page
+    totalProducts: 0,
+    currentPage: 1,
+    productsPerPage: 12,
     isLoading: false,
     error: null,
 

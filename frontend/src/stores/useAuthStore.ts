@@ -1,14 +1,11 @@
-// src/stores/useAuthStore.ts
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import axios from "axios";
 
-// --- Interfaces for Type Safety ---
-
 interface UserProfile {
-  id: string; // From Flask backend, user.id is stringified for JWT
+  id: string;
   username: string;
-  email?: string; // Optional if not always returned/needed
+  email?: string;
   created_at: string;
   updated_at: string;
 }
@@ -37,15 +34,11 @@ interface AuthActions {
   setLoading: (loading: boolean) => void;
 }
 
-// --- API Base URL ---
-// IMPORTANT: Replace with your actual Flask backend URL
 const API_BASE_URL = "http://127.0.0.1:5000";
 
-// --- Auth Store Creation ---
 export const useAuthStore = create<AuthState & AuthActions>()(
   persist(
     (set, get) => ({
-      // Initial State
       accessToken: null,
       user: null,
       isAuthenticated: false,
@@ -101,8 +94,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           const { message, user } = response.data;
 
           if (message && response.status === 201) {
-            // Optionally log in the user immediately after successful registration
-            // await get().login({ email: userData.email, password: userData.password });
             set({ isLoading: false, error: null }); // Just clear loading/error for now
             console.log("Registration successful:", message, user);
             return true;
@@ -128,8 +119,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       logout: async () => {
         set({ isLoading: true, error: null });
         try {
-          // Send request to Flask backend to blacklist token and clear HttpOnly cookies
-          // The client-side accessToken is cleared regardless of backend success
           const currentAccessToken = get().accessToken;
           if (currentAccessToken) {
             await axios.post(
@@ -141,15 +130,13 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             );
           }
           // For refresh token logout, also send to /auth/logout_refresh if needed
-          // You might need a separate endpoint or rely on the browser sending the cookie
-          // For now, we clear client-side state. HttpOnly cookies will be cleared by the backend response.
+
           await axios.post(`${API_BASE_URL}/auth/logout_refresh`, {}); // Browser sends refresh cookie automatically
         } catch (err: any) {
           console.warn(
             "Logout backend call failed (may be token already invalid or network issue):",
             err.response?.data?.message || err.message
           );
-          // Continue with client-side cleanup even if backend call fails to ensure client is logged out
         } finally {
           set({
             accessToken: null,
@@ -216,12 +203,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-      // Optionally, you can add a version to handle schema changes
-      // version: 1,
-      // migrate: (persistedState: any, version: number) => {
-      //   if (version === 0) { /* migration logic */ }
-      //   return persistedState as AuthState;
-      // },
     }
   )
 );

@@ -1,4 +1,3 @@
-// src/stores/useCartStore.ts
 import { create } from "zustand";
 import axios from "axios";
 
@@ -38,10 +37,8 @@ interface CartActions {
   clearError: () => void;
 }
 
-// --- API Base URL ---
-const API_BASE_URL = "http://127.0.0.1:5000"; // Make sure this matches your Flask backend URL
+const API_BASE_URL = "http://127.0.0.1:5000";
 
-// --- Cart Store ---
 export const useCartStore = create<CartState & CartActions>((set, get) => ({
   // Initial State
   cartItems: [],

@@ -1,28 +1,25 @@
 import { create } from "zustand";
 import axios from "axios";
 
-// --- Interfaces ---
-
 interface ChatMessageProduct {
   id: number;
   name: string;
   image_url: string;
   discounted_price: number;
-  // Add other fields relevant for displaying in the chat
 }
 
 interface ChatMessage {
-  id: string; // Unique ID for the message (e.g., timestamp or UUID)
+  id: string;
   sender: "user" | "chatbot";
   text: string;
-  products?: ChatMessageProduct[]; // Optional products returned by chatbot
+  products?: ChatMessageProduct[];
   timestamp: string;
 }
 
 interface ChatbotState {
   messages: ChatMessage[];
-  isTyping: boolean; // For chatbot's "typing..." indicator
-  isLoading: boolean; // For overall API request loading
+  isTyping: boolean;
+  isLoading: boolean;
   error: string | null;
 }
 
@@ -32,10 +29,9 @@ interface ChatbotActions {
   clearError: () => void;
 }
 
-// --- API Base URL ---
-const API_BASE_URL = "http://127.0.0.1:5000"; // Make sure this matches your Flask backend URL
+const API_BASE_URL = "http://127.0.0.1:5000";
+URL;
 
-// --- Chatbot Store ---
 export const useChatbotStore = create<ChatbotState & ChatbotActions>(
   (set, get) => ({
     // Initial State
@@ -46,7 +42,7 @@ export const useChatbotStore = create<ChatbotState & ChatbotActions>(
 
     // Actions
     sendMessage: async (userMessage: string) => {
-      const newMessageId = Date.now().toString(); // Simple ID for messages
+      const newMessageId = Date.now().toString();
       const userChatMessage: ChatMessage = {
         id: newMessageId,
         sender: "user",
@@ -57,7 +53,7 @@ export const useChatbotStore = create<ChatbotState & ChatbotActions>(
       set((state) => ({
         messages: [...state.messages, userChatMessage],
         isLoading: true,
-        isTyping: true, // Show typing indicator while waiting for response
+        isTyping: true,
         error: null,
       }));
 
@@ -71,7 +67,7 @@ export const useChatbotStore = create<ChatbotState & ChatbotActions>(
           id: Date.now().toString() + "-bot",
           sender: "chatbot",
           text: chatbotText,
-          products: products || [], // Ensure products is an array
+          products: products || [],
           timestamp: new Date().toISOString(),
         };
 
@@ -104,9 +100,6 @@ export const useChatbotStore = create<ChatbotState & ChatbotActions>(
 
     clearChat: () => {
       set({ messages: [], error: null });
-      // Optionally, send a 'reset' message to the backend to clear server-side context
-      // This could be a separate action if you want to differentiate client-side clear from full reset.
-      // get().sendMessage('reset'); // This would cause a loop if not handled carefully
     },
 
     clearError: () => set({ error: null }),
