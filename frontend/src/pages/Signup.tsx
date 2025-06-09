@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
-import Header from "../components/header";
+import Header from "../components/Header";
 
 const SignupPage: React.FC = () => {
   const [username, setUsername] = useState("");
